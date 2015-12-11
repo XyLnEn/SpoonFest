@@ -2,6 +2,8 @@ package vv.spoon.logger;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class LogWriter {
@@ -10,47 +12,29 @@ public class LogWriter {
     private static Map<String, Integer> appels;
     private static Integer level;
     private static ShutdownHookLog Hook;
-
-    public static void writeLog() throws FileNotFoundException {
-		if(fileWriter == null) {
-			fileWriter = new PrintWriter("log");
-		}
-		if(appels != null) {
-			for(Map.Entry<String, Integer> val: appels.entrySet()) {
-				fileWriter.write(val.getKey() + ": " + val.getValue() + "\n")
-			}
-		}
-        fileWriter.close();
-    }
-
-    public static  void out(String string, boolean error) {
-        try {
-            PrintWriter writer = getWriter();
-
-            if(error) {
-                writer.write("ERROR: ");
-            } else {
-                writer.write("INFO: ");
+    
+    public static void writeLog() {
+    try {
+            if (fileWriter == null) {
+                fileWriter = new PrintWriter("log");
             }
-            writer.write(string + "\n");
+            if (appels != null) {
+                for (Map.Entry<String, Integer> entry : appels.entrySet()) {
+                    fileWriter.write(entry.getKey() + ":" + entry.getValue() + "\n");
+                }
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    protected static PrintWriter getWriter() throws FileNotFoundException {
-        if(fileWriter == null) {
-            ShutdownHookLog shutdownHook = new ShutdownHookLog();
-            Runtime.getRuntime().addShutdownHook(shutdownHook);
-            fileWriter = new PrintWriter("log");
+        if (fileWriter != null) {
+            fileWriter.close();
         }
-        return fileWriter;
     }
     
     public static void use(String string) throws FileNotFoundException {
-        if(hook == null) {
-	        hook = new ShutdownHookLog();
-	        Runtime.getRuntime().addShutdownHook(hook);
+        if(Hook == null) {
+	        Hook = new ShutdownHookLog();
+	        Runtime.getRuntime().addShutdownHook(Hook);
 		}
 		
 	    if (appels == null) {

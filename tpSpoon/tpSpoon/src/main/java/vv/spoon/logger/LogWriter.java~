@@ -2,37 +2,55 @@ package vv.spoon.logger;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class LogWriter {
 
     private static PrintWriter fileWriter;
-
+    private static Map<String, Integer> appels;
+    private static Integer level;
+    private static ShutdownHookLog Hook;
+    
     public static void writeLog() {
-        fileWriter.close();
-    }
-
-    public static  void out(String string, boolean error) {
-        try {
-            PrintWriter writer = getWriter();
-
-            if(error) {
-                writer.write("ERROR: ");
-            } else {
-                writer.write("INFO: ");
+    try {
+            if (fileWriter == null) {
+                fileWriter = new PrintWriter("log");
             }
-            writer.write(string + "\n");
+            if (methodMap != null) {
+                for (Map.Entry<String, Integer> entry : appels.entrySet()) {
+                    fileWriter.write(entry.getKey() + ":" + entry.getValue() + "\n");
+                }
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    protected static PrintWriter getWriter() throws FileNotFoundException {
-        if(fileWriter == null) {
-            ShutdownHookLog shutdownHook = new ShutdownHookLog();
-            Runtime.getRuntime().addShutdownHook(shutdownHook);
-            fileWriter = new PrintWriter("log");
+        if (fileWriter != null) {
+            fileWriter.close();
         }
-        return fileWriter;
     }
+    
+    public static void use(String string) throws FileNotFoundException {
+        if(Hook == null) {
+	        Hook = new ShutdownHookLog();
+	        Runtime.getRuntime().addShutdownHook(Hook);
+		}
+		
+	    if (appels == null) {
+	        appels = new HashMap<String, Integer>();
+	    }
+	    
+	    Integer i = appels.get(string);
+	    if(i == 0) {
+	    	i = 1;
+	    } else {
+	    	i++;
+	    }
+	    appels.put(string,i);
+		
+        
+        
+    }
+    
 }

@@ -7,17 +7,19 @@ import java.io.IOException;
 //see https://github.com/Giraudux/tp-instrumentation-spoon
 public class MainExample {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
+    
+    spoon.Launcher.main(args);
         //Instru instru = new Instru(args[0], args[1], new LogProcessor());
 
-		Instru instru = new Instru(args[0], args[1], new LogProcessorCountFunc());
+		//Instru instru = new Instru(args[0], args[1], new LogProcessorCountFunc());
 
 
         //copy the project (args[0]) in the output directory (args[1])
-        instru.initOutputDirectory();
+       // instru.initOutputDirectory();
 
         //instrumentalize the java code of output directory with LogProcessor
-        instru.instru();
+       // instru.instru();
     }
 
 }

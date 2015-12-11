@@ -3,10 +3,16 @@ package vv.spoon.processor;
 import spoon.processing.AbstractProcessor;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtInvocation;
+import spoon.reflect.code.CtStatement;
 import spoon.reflect.cu.CompilationUnit;
 import spoon.reflect.cu.SourceCodeFragment;
 import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.reference.CtExecutableReference;
+import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtConstructor;
+import spoon.reflect.declaration.CtExecutable;
+import spoon.reflect.declaration.CtMethod;
+
 
 
 public class LogProcessorCountFunc extends AbstractProcessor<CtExecutable<?>>  {
@@ -41,18 +47,17 @@ public class LogProcessorCountFunc extends AbstractProcessor<CtExecutable<?>>  {
 
     @Override
     public void process(CtExecutable<?> element) {
-	String snippet = "vv.spoon.logger.LogWriter.use(\"" + element.getSimpleName() + "(" + getAttributOf(element) + "\")";
-        CtStatement state = getFactory().Code().createCodeSnippetStatement(snipper);
+	String snippet = "vv.spoon.logger.LogWriter.use(\"" + this.getElement(element)+ "\")";
+        CtStatement state = getFactory().Code().createCodeSnippetStatement(snippet);
 
-        executable.getBody().insertBegin(state);
+        element.getBody().insertBegin(state);
     }
     
-    public String getAttributeOf(CtExecutable<?> element) {
-    string result = "";
-    	foreach(CtParameter<?> param : element.getParameters()) {
-    		result = result + param.getSimpleName() + ", " ;
-    	}
-    	return result;
+    public String getElement(CtExecutable<?> element) {
+    	string result = "";
+    	result += element.getParent(CtClass.class).getSimpleName()+".";
+        result += element.getSimpleName()+"("+element.getParameters()+")";
+        return result;
     }
 
 }
