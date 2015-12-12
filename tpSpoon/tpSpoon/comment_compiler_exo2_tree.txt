@@ -1,0 +1,10 @@
+comment compiler:
+mvn package
+java -cp .:target/tpSpoon-1.0-SNAPSHOT-jar-with-dependencies.jar vv.spoon.MainExample -i src/main/resources/example/src/main/java/example -o src/main/resources/example-instrumented/src/main/java -p vv.spoon.processor.LogProcessortree
+cp src/main/resources/example/pom.xml src/main/resources/example-instrumented
+mkdir -p src/main/resources/example-instrumented/src/main/java/vv/spoon
+cp -r src/main/java/vv/spoon/logger src/main/resources/example-instrumented/src/main/java/vv/spoon
+cd src/main/resources/example-instrumented
+mvn package
+java -cp .:target/example-1.0-SNAPSHOT.jar example.A 2
+cat logtree
